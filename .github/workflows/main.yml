@@ -12,28 +12,8 @@ jobs:
       - name: Install AnyDesk
         run: brew install --cask anydesk
 
-      - name: Grant Permissions
+      - name: Create Virtual Display
         run: |
-          sudo sqlite3 "/Library/Application Support/com.apple.TCC/TCC.db" \
-          "INSERT or REPLACE INTO access VALUES('kTCCServiceScreenCapture','com.anydesk.anydesk',0,1,1,NULL,'UNUSED',NULL,0,1640000);"
-          sudo sqlite3 "/Library/Application Support/com.apple.TCC/TCC.db" \
-          "INSERT or REPLACE INTO access VALUES('kTCCServiceAccessibility','com.anydesk.anydesk',0,1,1,NULL,'UNUSED',NULL,0,1640000);"
-
-      - name: Start AnyDesk Unattended
-        run: |
-          PASSWORD="Anydesk@123"
-          
-          /Applications/AnyDesk.app/Contents/MacOS/AnyDesk --set-password "$PASSWORD"
-          /Applications/AnyDesk.app/Contents/MacOS/AnyDesk --enable-service
-          /Applications/AnyDesk.app/Contents/MacOS/AnyDesk --start-service
-          sleep 5
-          
-          ANYDESK_ID=$(/Applications/AnyDesk.app/Contents/MacOS/AnyDesk --get-id)
-          
-          echo "================================"
-          echo "AnyDesk ID: $ANYDESK_ID"
-          echo "Password: $PASSWORD"
-          echo "================================"
-
+          /System/Library/CoreServices/RemoteManagement/ARDAgent.app/Contents/Resources/kickstart -activate -configure -access -on -
       - name: Keep Alive
         run: while true; do sleep 60; done
